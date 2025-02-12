@@ -28,6 +28,12 @@ def is_valid_guess(guess):
         guess[0] != '0'
     )
 
+def evaluate_guess(secret, guess):
+    """Vyhodnotí tip uživatele a vrátí počet bulls a cows."""
+    bulls = sum(s == g for s, g in zip(secret, guess))
+    cows = sum(g in secret for g in guess) - bulls
+    return bulls, cows
+
 def main():
     """Hlavní logika hry Bulls and Cows."""
     print(
@@ -40,9 +46,22 @@ def main():
 
     secret_number = generate_secret_number()
     print(secret_number)
+    attempts = 0
+    start_time = time.time()
+    
+    while True:
+        guess = input("Enter a number: ")
+        print("-" * 47)
+        
+        if not is_valid_guess(guess):
+            print("Invalid input! Enter a 4-digit number with unique digits.")
+            print("-" * 47)
+            continue
 
+        attempts += 1
+        bulls, cows = evaluate_guess(secret_number, guess)
 
-
+        print(bulls, cows)
 
 if __name__ == "__main__":
     main()
