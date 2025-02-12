@@ -10,17 +10,33 @@ import random
 import time
 
 def generate_secret_number():
-    """Generuje náhodné 4místné číslo s unikátními číslicemi a nezačínající nulou."""
-    digits = list(range(1, 10))  # První číslo nesmí být 0
+    """Generuje náhodné 4místné číslo s unikátními číslicemi a nezačínající nulou.
+    
+    Returns:
+        str: Náhodné čtyřciferné číslo jako řetězec.
+    """
+    digits = list(range(1, 10)) # První číslo nesmí být 0
     random.shuffle(digits)
-    secret = [str(digits.pop(0))]  # První číslo
-    digits.append(0)  # Přidá 0 do seznamu čísel
+    secret = [str(digits.pop(0))] # První číslo
+    digits.append(0) # Přidá 0 do seznamu čísel
     random.shuffle(digits)
     secret.extend(str(digits.pop()) for _ in range(3))
     return ''.join(secret)
 
 def is_valid_guess(guess):
-    """Ověří, zda je vstup validní (4 unikátní číslice, nezačíná 0, pouze čísla)."""
+    """
+    Ověří, zda je vstup validní:
+    - Má přesně 4 číslice.
+    - Obsahuje pouze čísla.
+    - Obsahuje unikátní číslice.
+    - Nezačíná nulou.
+
+    Args:
+        guess (str): Uživatelův vstup.
+
+    Returns:
+        bool: True, pokud je vstup validní, jinak False.
+    """
     return (
         len(guess) == 4 and
         guess.isdigit() and
@@ -29,7 +45,19 @@ def is_valid_guess(guess):
     )
 
 def evaluate_guess(secret, guess):
-    """Vyhodnotí tip uživatele a vrátí počet bulls a cows."""
+    """
+    Vyhodnotí tip uživatele a spočítá počet bulls a cows.
+
+    Bulls = správná číslice na správné pozici.  
+    Cows = správná číslice na špatné pozici.
+
+    Args:
+        secret (str): Tajné číslo.
+        guess (str): Tip uživatele.
+
+    Returns:
+        tuple: Počet bulls a cows (int, int).
+    """
     bulls = sum(s == g for s, g in zip(secret, guess))
     cows = sum(g in secret for g in guess) - bulls
     return bulls, cows
@@ -72,7 +100,8 @@ def main():
                 f"Time taken: {duration} seconds\n"
                 f"{'-' * 47}"
             )
-            
+
+            # Hodnocení výkonu hráče na základě počtu pokusů
             if attempts <= 5:
                 print("Outstanding performance!!! 🔥")
             elif attempts <= 10:
@@ -81,8 +110,10 @@ def main():
                 print("Average performance. 👍")
             else:
                 print("Not so good, better luck next time. 😅")
-            break
 
+            break # Ukončení hry po správném uhodnutí
+
+        # Korektní zobrazení jednotného/množného čísla pro "bull" a "cow"
         bull_text = "bull" if bulls == 1 else "bulls"
         cow_text = "cow" if cows == 1 else "cows"
         print(
